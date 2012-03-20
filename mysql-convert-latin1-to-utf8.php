@@ -16,6 +16,10 @@
  * @link      http://www.nicj.net
  */
 
+// TODO: Pretend-mode -- if set to true, no SQL queries will be executed.  Instead, they will only be echo'd
+// to the console.
+$pretend = false;
+
 // TODO: The collation you want to convert all columns to
 $newCollation = 'utf8_general_ci';
 
@@ -38,7 +42,7 @@ mysql_select_db($dbName, $targetDB);
 //
 // You may need to drop FULLTEXT indexes before the conversion -- execute the drop here.
 // eg.
-//    sqlExec($targetDB, "ALTER TABLE MyTable DROP INDEX `my_index_name`");
+//    sqlExec($targetDB, "ALTER TABLE MyTable DROP INDEX `my_index_name`", $pretend);
 //
 // If so, you should restore the FULLTEXT index after the conversion -- search for 'TODO'
 // later in this script.
@@ -119,26 +123,26 @@ foreach ($tables as $table) {
         $tempColType = str_ireplace($colDataType, $tmpDataType, $colType);
 
         // Convert the column to the temporary BINARY cousin
-        sqlExec($targetDB, "ALTER TABLE `$dbName`.`$tableName` MODIFY `$colName` $tempColType $colNull");
+        sqlExec($targetDB, "ALTER TABLE `$dbName`.`$tableName` MODIFY `$colName` $tempColType $colNull", $pretend);
 
         // Convert it back to the original type with the correct collation
-        sqlExec($targetDB, "ALTER TABLE `$dbName`.`$tableName` MODIFY `$colName` $colType COLLATE $newCollation $colNull $colDefault");
+        sqlExec($targetDB, "ALTER TABLE `$dbName`.`$tableName` MODIFY `$colName` $colType COLLATE $newCollation $colNull $colDefault", $pretend);
     }
 
     if ($tableCollation !== $newCollation) {
         // Modify the default charset for this table
-        sqlExec($targetDB, "ALTER TABLE `$dbName`.`$tableName` DEFAULT COLLATE $newCollation");
+        sqlExec($targetDB, "ALTER TABLE `$dbName`.`$tableName` DEFAULT COLLATE $newCollation", $pretend);
     }
 }
 
 //
 // TODO: Restore FULLTEXT indexes here
 // eg.
-//    sqlExec($targetDB, "ALTER TABLE MyTable ADD FULLTEXT KEY `my_index_name` (`mycol1`)");
+//    sqlExec($targetDB, "ALTER TABLE MyTable ADD FULLTEXT KEY `my_index_name` (`mycol1`)", $pretend);
 //
 
 // Set the default collation
-sqlExec($infoDB, "ALTER DATABASE $dbName COLLATE $newCollation");
+sqlExec($infoDB, "ALTER DATABASE $dbName COLLATE $newCollation", $pretend);
 
 // Done!
 
@@ -148,22 +152,28 @@ sqlExec($infoDB, "ALTER DATABASE $dbName COLLATE $newCollation");
 /**
  * Executes the specified SQL
  *
- * @param object $db  Target SQL connection
- * @param string $sql SQL to execute
+ * @param object  $db      Target SQL connection
+ * @param string  $sql     SQL to execute
+ * @param boolean $pretend Pretend mode -- if set to true, don't execute query
  *
  * @return SQL result
  */
-function sqlExec($db, $sql)
+function sqlExec($db, $sql, $pretend = false)
 {
     echo "$sql;\n";
-    $res = mysql_query($sql, $db);
 
-    $error = mysql_error($db);
-    if ($error !== '') {
-        print "!!! ERROR: $error\n";
+    if ($pretend === false) {
+        $res = mysql_query($sql, $db);
+
+        $error = mysql_error($db);
+        if ($error !== '') {
+            print "!!! ERROR: $error\n";
+        }
+
+        return $res;
     }
 
-    return $res;
+    return false;
 }
 
 /**
