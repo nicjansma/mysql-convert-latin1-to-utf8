@@ -109,15 +109,25 @@ foreach ($tables as $table) {
                 $tmpDataType = 'LONGBLOB';
                 break;
 
+// If your database uses the enum type it is safe to uncomment this block and line 122-124 if and only if all of the enum possibilities only use characters in the 0-127 ASCII character set.
+//            case 'ENUM':
+//                $tmpDataType = 'SKIP';
+//                break;
+
             default:
                 $tmpDataType = '';
                 break;
         }
 
+//        if ($tmpDataType === 'SKIP') {
+//            break;
+//        }
+
         if ($tmpDataType === '') {
             print "Unknown type! $colDataType\n";
             exit;
         }
+
 
         // Change the column definition to the new type
         $tempColType = str_ireplace($colDataType, $tmpDataType, $colType);
