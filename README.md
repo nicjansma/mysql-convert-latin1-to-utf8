@@ -133,11 +133,11 @@ Warning: Please be careful when using the script and test, test, test before com
 
 # Version History
 
-v1.0 - 2011-04-17: Initial release
+* v1.0 - 2011-04-17: Initial release
+* v1.1 - 2013-01-25: Added possible ENUM support
 
 # Credits
 
-Initially based on fabio's script:
-    http://www.varesano.net/blog/fabio/latin1%20encoded%20tables%20or%20databases%20utf8%20data%20stored%20convert%20them%20native%20mysql%20utf8%20tables
+Initially based on [fabio's script](http://www.varesano.net/blog/fabio/latin1%20encoded%20tables%20or%20databases%20utf8%20data%20stored%20convert%20them%20native%20mysql%20utf8%20tables).
 
 Modified by Nic Jansma

@@ -2,6 +2,8 @@
 /**
  * mysql-convert-latin1-to-utf8.php
  *
+ * v1.1
+ *
  * Converts incorrect MySQL latin1 columns to UTF8.
  *
  * NOTE: Look for 'TODO's for things you may need to configure.
@@ -12,7 +14,7 @@
  * Or, read README.md.
  *
  * @author    Nic Jansma <nic@nicj.net>
- * @copyright 2012 Nic Jansma
+ * @copyright 2013 Nic Jansma
  * @link      http://www.nicj.net
  */
 
