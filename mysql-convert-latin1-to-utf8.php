@@ -13,6 +13,8 @@
  *
  * Or, read README.md.
  *
+ * PHP Version 5
+ *
  * @author    Nic Jansma <nic@nicj.net>
  * @copyright 2013 Nic Jansma
  * @link      http://www.nicj.net
@@ -111,17 +113,17 @@ foreach ($tables as $table) {
                 $tmpDataType = 'LONGBLOB';
                 break;
 
-//
-// TODO: If your database uses the enum type it is safe to uncomment this block if and only if
-// all of the enum possibilities only use characters in the 0-127 ASCII character set.
-//
-//            case 'ENUM':
-//                $tmpDataType = 'SKIP';
-//
-//                // ENUM data-type isn't using a temporary BINARY type -- just convert its column type now
-//                sqlExec($targetDB, "ALTER TABLE `$dbName`.`$tableName` MODIFY `$colName` $colType COLLATE $newCollation $colNull $colDefault", $pretend);
-//
-//                break;
+            //
+            // TODO: If your database uses the enum type it is safe to uncomment this block if and only if
+            // all of the enum possibilities only use characters in the 0-127 ASCII character set.
+            //
+            // case 'ENUM':
+            //      $tmpDataType = 'SKIP';
+            //
+            //      // ENUM data-type isn't using a temporary BINARY type -- just convert its column type now
+            //      sqlExec($targetDB, "ALTER TABLE `$dbName`.`$tableName` MODIFY `$colName` $colType COLLATE $newCollation $colNull $colDefault", $pretend);
+            //
+            //      break;
 
             default:
                 $tmpDataType = '';
