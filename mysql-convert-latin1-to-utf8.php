@@ -18,7 +18,7 @@
 
 // TODO: Pretend-mode -- if set to true, no SQL queries will be executed.  Instead, they will only be echo'd
 // to the console.
-$pretend = false;
+$pretend = true;
 
 // TODO: The collation you want to convert all columns to
 $newCollation = 'utf8_general_ci';
