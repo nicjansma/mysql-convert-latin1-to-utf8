@@ -2,7 +2,7 @@
 /**
  * mysql-convert-latin1-to-utf8.php
  *
- * v1.1
+ * v1.2
  *
  * Converts incorrect MySQL latin1 columns to UTF8.
  *
@@ -24,8 +24,26 @@
 // to the console.
 $pretend = true;
 
-// TODO: The collation you want to convert all columns to
-$newCollation = 'utf8_general_ci';
+//Should SET and ENUM columns be processed?
+$processEnums = false;
+
+// TODO: The collation you want to convert the overall database to
+$defaultCollation = 'utf8_general_ci';
+
+// TODO Convert column collations and table defaults using this mapping
+//latin1_swedish_ci is included since that's the MySQL default
+$collationMap = array(
+    'latin1_bin' => 'utf8_bin',
+    'latin1_general_ci' => 'utf8_general_ci',
+    'latin1_swedish_ci' => 'utf8_general_ci'
+);
+
+$mapstring = '';
+foreach($collationMap as $s => $t) {
+    $mapstring .= "'$s',";
+}
+$mapstring = substr($mapstring, 0, -1); //Strip trailing comma
+echo $mapstring;
 
 // TODO: Database information
 $dbHost = 'localhost';
@@ -68,10 +86,20 @@ foreach ($tables as $table) {
          FROM   COLUMNS
          WHERE  TABLE_SCHEMA    = '$dbName'
             AND TABLE_Name      = '$tableName'
-            AND COLLATION_NAME != '$newCollation'
+            AND COLLATION_NAME IN($mapstring)
             AND COLLATION_NAME IS NOT NULL");
 
+    $intermediateChanges = array();
+    $finalChanges = array();
+    
     foreach ($cols as $col) {
+
+        //If this column doesn't use one of the collations we want to handle, skip it
+        if (!array_key_exists($col->COLLATION_NAME, $collationMap)) {
+            continue;
+        } else {
+            $targetCollation = $collationMap[$col->COLLATION_NAME];
+        }
 
         // Save current column settings
         $colName      = $col->COLUMN_NAME;
@@ -117,13 +145,14 @@ foreach ($tables as $table) {
             // TODO: If your database uses the enum type it is safe to uncomment this block if and only if
             // all of the enum possibilities only use characters in the 0-127 ASCII character set.
             //
-            // case 'ENUM':
-            //      $tmpDataType = 'SKIP';
-            //
-            //      // ENUM data-type isn't using a temporary BINARY type -- just convert its column type now
-            //      sqlExec($targetDB, "ALTER TABLE `$dbName`.`$tableName` MODIFY `$colName` $colType COLLATE $newCollation $colNull $colDefault", $pretend);
-            //
-            //      break;
+            case 'SET':
+            case 'ENUM':
+                  $tmpDataType = 'SKIP';
+                  if ($processEnums) {
+                      // ENUM data-type isn't using a temporary BINARY type -- just convert its column type directly
+                      $finalChanges[] = "MODIFY `$colName` $colType COLLATE $defaultCollation $colNull $colDefault";
+                  }
+                  break;
 
             default:
                 $tmpDataType = '';
@@ -144,15 +173,22 @@ foreach ($tables as $table) {
         $tempColType = str_ireplace($colDataType, $tmpDataType, $colType);
 
         // Convert the column to the temporary BINARY cousin
-        sqlExec($targetDB, "ALTER TABLE `$dbName`.`$tableName` MODIFY `$colName` $tempColType $colNull", $pretend);
+        $intermediateChanges[] = "MODIFY `$colName` $tempColType $colNull";
 
         // Convert it back to the original type with the correct collation
-        sqlExec($targetDB, "ALTER TABLE `$dbName`.`$tableName` MODIFY `$colName` $colType COLLATE $newCollation $colNull $colDefault", $pretend);
+        $finalChanges[] = "MODIFY `$colName` $colType COLLATE $targetCollation $colNull $colDefault";
     }
 
-    if ($tableCollation !== $newCollation) {
-        // Modify the default charset for this table
-        sqlExec($targetDB, "ALTER TABLE `$dbName`.`$tableName` DEFAULT COLLATE $newCollation", $pretend);
+    if (array_key_exists($tableCollation, $collationMap)) {
+        $finalChanges[] = "DEFAULT COLLATE ".$collationMap[$tableCollation];
+    }
+
+    //Now run the conversions
+    if (count($intermediateChanges) > 0) {
+        sqlExec($targetDB, "ALTER TABLE `$dbName`.`$tableName`\n". implode(",\n", $intermediateChanges), $pretend);
+    }
+    if (count($finalChanges) > 0) {
+        sqlExec($targetDB, "ALTER TABLE `$dbName`.`$tableName`\n". implode(",\n", $finalChanges), $pretend);
     }
 }
 
@@ -163,7 +199,7 @@ foreach ($tables as $table) {
 //
 
 // Set the default collation
-sqlExec($infoDB, "ALTER DATABASE $dbName COLLATE $newCollation", $pretend);
+sqlExec($infoDB, "ALTER DATABASE $dbName COLLATE $defaultCollation", $pretend);
 
 // Done!
 
@@ -219,5 +255,3 @@ function sqlObjs($db, $sql)
 
     return $a;
 }
-
-?>
