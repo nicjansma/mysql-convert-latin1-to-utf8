@@ -27,8 +27,8 @@ Additionally, the script will only update appropriate text-based columns.  Chara
 types of data: CHAR, VARCHAR, TINYTEXT, TEXT, MEDIUMTEXT and LONGTEXT. Other column types such as numeric (INT) and
 BLOBs do not have a "character set".
 
-ENUM column types can be converted **only** if all of the enum possibilities only use characters in the 0-127 ASCII
-character set.  If you have ENUMs that satisfy this criteria, look for the relevant `TODO:` in the script.
+ENUM and SET column types can be converted **only** if all of the enum possibilities only use characters in the 0-127 ASCII
+character set.  If you have ENUMs or SETs that satisfy this criteria, look for the relevant `TODO:` in the script.
 
 You can see what character sets your columns are using via the MySQL Administration tool, phpMyAdmin, or even using a
 SQL query against the information\_schema:
@@ -134,10 +134,15 @@ Warning: Please be careful when using the script and test, test, test before com
 # Version History
 
 * v1.0 - 2011-04-17: Initial release
-* v1.1 - 2013-01-25: Added possible ENUM support
+* v1.1 - 2013-01-25: Added possible ENUM support via [patrick-mcdougle](https://github.com/patrick-mcdougle)
+* v1.2 - 2013-03-26: Added SET support and the ability to convert from multiple collations, as well as bulk-doing conversion in one statement for quicker changes via [Synchro](https://github.com/Synchro)
 
 # Credits
 
 Initially based on [fabio's script](http://www.varesano.net/blog/fabio/latin1%20encoded%20tables%20or%20databases%20utf8%20data%20stored%20convert%20them%20native%20mysql%20utf8%20tables).
 
 Modified by Nic Jansma
+
+Contributions by:
+* [patrick-mcdougle](https://github.com/patrick-mcdougle)
+* [Synchro](https://github.com/Synchro)
