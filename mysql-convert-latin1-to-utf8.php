@@ -24,25 +24,26 @@
 // to the console.
 $pretend = true;
 
-//Should SET and ENUM columns be processed?
+// TODO: Should SET and ENUM columns be processed?
 $processEnums = false;
 
 // TODO: The collation you want to convert the overall database to
 $defaultCollation = 'utf8_general_ci';
 
 // TODO Convert column collations and table defaults using this mapping
-//latin1_swedish_ci is included since that's the MySQL default
+// latin1_swedish_ci is included since that's the MySQL default
 $collationMap = array(
-    'latin1_bin' => 'utf8_bin',
+    'latin1_bin'        => 'utf8_bin',
     'latin1_general_ci' => 'utf8_general_ci',
     'latin1_swedish_ci' => 'utf8_general_ci'
 );
 
 $mapstring = '';
-foreach($collationMap as $s => $t) {
+foreach ($collationMap as $s => $t) {
     $mapstring .= "'$s',";
 }
-$mapstring = substr($mapstring, 0, -1); //Strip trailing comma
+
+$mapstring = substr($mapstring, 0, -1); // Strip trailing comma
 echo $mapstring;
 
 // TODO: Database information
@@ -91,10 +92,9 @@ foreach ($tables as $table) {
 
     $intermediateChanges = array();
     $finalChanges = array();
-    
-    foreach ($cols as $col) {
 
-        //If this column doesn't use one of the collations we want to handle, skip it
+    foreach ($cols as $col) {
+        // If this column doesn't use one of the collations we want to handle, skip it
         if (!array_key_exists($col->COLLATION_NAME, $collationMap)) {
             continue;
         } else {
@@ -147,12 +147,12 @@ foreach ($tables as $table) {
             //
             case 'SET':
             case 'ENUM':
-                  $tmpDataType = 'SKIP';
-                  if ($processEnums) {
-                      // ENUM data-type isn't using a temporary BINARY type -- just convert its column type directly
-                      $finalChanges[] = "MODIFY `$colName` $colType COLLATE $defaultCollation $colNull $colDefault";
-                  }
-                  break;
+                $tmpDataType = 'SKIP';
+                if ($processEnums) {
+                    // ENUM data-type isn't using a temporary BINARY type -- just convert its column type directly
+                    $finalChanges[] = "MODIFY `$colName` $colType COLLATE $defaultCollation $colNull $colDefault";
+                }
+                break;
 
             default:
                 $tmpDataType = '';
@@ -180,13 +180,14 @@ foreach ($tables as $table) {
     }
 
     if (array_key_exists($tableCollation, $collationMap)) {
-        $finalChanges[] = "DEFAULT COLLATE ".$collationMap[$tableCollation];
+        $finalChanges[] = 'DEFAULT COLLATE ' . $collationMap[$tableCollation];
     }
 
-    //Now run the conversions
+    // Now run the conversions
     if (count($intermediateChanges) > 0) {
         sqlExec($targetDB, "ALTER TABLE `$dbName`.`$tableName`\n". implode(",\n", $intermediateChanges), $pretend);
     }
+
     if (count($finalChanges) > 0) {
         sqlExec($targetDB, "ALTER TABLE `$dbName`.`$tableName`\n". implode(",\n", $finalChanges), $pretend);
     }
@@ -255,3 +256,5 @@ function sqlObjs($db, $sql)
 
     return $a;
 }
+
+?>
