@@ -32,18 +32,20 @@ $defaultCollation = 'utf8_general_ci';
 
 // TODO Convert column collations and table defaults using this mapping
 // latin1_swedish_ci is included since that's the MySQL default
-$collationMap = array(
-    'latin1_bin'        => 'utf8_bin',
-    'latin1_general_ci' => 'utf8_general_ci',
-    'latin1_swedish_ci' => 'utf8_general_ci'
-);
+$collationMap =
+ array(
+  'latin1_bin'        => 'utf8_bin',
+  'latin1_general_ci' => 'utf8_general_ci',
+  'latin1_swedish_ci' => 'utf8_general_ci',
+ );
 
 $mapstring = '';
 foreach ($collationMap as $s => $t) {
     $mapstring .= "'$s',";
 }
 
-$mapstring = substr($mapstring, 0, -1); // Strip trailing comma
+// Strip trailing comma
+$mapstring = substr($mapstring, 0, -1);
 echo $mapstring;
 
 // TODO: Database information
@@ -91,7 +93,7 @@ foreach ($tables as $table) {
             AND COLLATION_NAME IS NOT NULL");
 
     $intermediateChanges = array();
-    $finalChanges = array();
+    $finalChanges        = array();
 
     foreach ($cols as $col) {
         // If this column doesn't use one of the collations we want to handle, skip it
