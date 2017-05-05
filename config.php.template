@@ -1,0 +1,37 @@
+<?php
+/*
+ * template file for config
+ */
+
+// TODO: Pretend-mode -- if set to true, no SQL queries will be executed.  Instead, they will only be echo'd
+// to the console.
+$pretend = false;
+
+// TODO: Should SET and ENUM columns be processed?
+$processEnums = false;
+
+// TODO: The collation you want to convert the overall database to
+$defaultCollation = 'utf8_unicode_ci';
+
+// TODO Convert column collations and table defaults using this mapping
+// latin1_swedish_ci is included since that's the MySQL default
+$collationMap =
+ array(
+  'latin1_bin'        => 'utf8_bin',
+  'latin1_general_ci' => 'utf8_unicode_ci',
+  'latin1_swedish_ci' => 'utf8_unicode_ci',
+  'utf8_general_ci' => 'utf8_unicode_ci',
+ );
+
+// TODO: Database information
+$dbHost = 'localhost';
+$dbName = '';
+$dbUser = '';
+$dbPass = '';
+
+if($dbPass == '') {
+    echo "DB password:";
+    $dbPass = trim(fgets(STDIN));
+};
+
+

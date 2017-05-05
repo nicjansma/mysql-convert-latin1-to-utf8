@@ -28,16 +28,31 @@ $pretend = true;
 $processEnums = false;
 
 // TODO: The collation you want to convert the overall database to
-$defaultCollation = 'utf8_general_ci';
+$defaultCollation = 'utf8_unicode_ci';
 
 // TODO Convert column collations and table defaults using this mapping
 // latin1_swedish_ci is included since that's the MySQL default
 $collationMap =
  array(
   'latin1_bin'        => 'utf8_bin',
-  'latin1_general_ci' => 'utf8_general_ci',
-  'latin1_swedish_ci' => 'utf8_general_ci',
+  'latin1_general_ci' => 'utf8_unicode_ci',
+  'latin1_swedish_ci' => 'utf8_unicode_ci',
  );
+
+// TODO: Database information
+$dbHost = 'localhost';
+$dbName = '';
+$dbUser = '';
+$dbPass = '';
+
+if (file_exists('config.php')) {
+    require_once('config.php');
+}
+
+if($dbPass == '') {
+    echo "DB password:";
+    $dbPass = trim(fgets(STDIN));
+};
 
 $mapstring = '';
 foreach ($collationMap as $s => $t) {
@@ -47,12 +62,6 @@ foreach ($collationMap as $s => $t) {
 // Strip trailing comma
 $mapstring = substr($mapstring, 0, -1);
 echo $mapstring;
-
-// TODO: Database information
-$dbHost = 'localhost';
-$dbName = '';
-$dbUser = '';
-$dbPass = '';
 
 // Open a connection to the information_schema database
 $infoDB = mysql_connect($dbHost, $dbUser, $dbPass);
