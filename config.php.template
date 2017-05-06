@@ -29,9 +29,7 @@ $dbName = '';
 $dbUser = '';
 $dbPass = '';
 
-if($dbPass == '') {
+if ($dbPass == '') {
     echo "DB password:";
     $dbPass = trim(fgets(STDIN));
 };
-
-

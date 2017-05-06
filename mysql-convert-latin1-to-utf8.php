@@ -2,7 +2,7 @@
 /**
  * mysql-convert-latin1-to-utf8.php
  *
- * v1.2
+ * v1.3
  *
  * Converts incorrect MySQL latin1 columns to UTF8.
  *
@@ -49,8 +49,8 @@ if (file_exists('config.php')) {
     require_once('config.php');
 }
 
-if($dbPass == '') {
-    echo "DB password:";
+if ($dbPass == '') {
+    echo 'DB password:';
     $dbPass = trim(fgets(STDIN));
 };
 

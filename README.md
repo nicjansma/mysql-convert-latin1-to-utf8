@@ -136,6 +136,7 @@ Warning: Please be careful when using the script and test, test, test before com
 * v1.0 - 2011-04-17: Initial release
 * v1.1 - 2013-01-25: Added possible ENUM support via [patrick-mcdougle](https://github.com/patrick-mcdougle)
 * v1.2 - 2013-03-26: Added SET support and the ability to convert from multiple collations, as well as bulk-doing conversion in one statement for quicker changes via [Synchro](https://github.com/Synchro)
+* v1.3 - 2017-05-06: Allows for `config.php` separate from script via [bderubinat](https://github.com/bderubinat)
 
 # Credits
 
