@@ -230,21 +230,14 @@ sqlExec($infoDB, "ALTER DATABASE $dbName COLLATE $defaultCollation", $pretend);
 function sqlExec($db, $sql, $pretend = false)
 {
     echo "$sql;\n";
-
     if ($pretend === false) {
-        $res = $db->query($sql);
- 	
-	if ($res == false) {
-           $error = $db->error_list[0]['error'];
-           if ($error !== '') {
-               print "!!! ERROR: $error\n";
-           }
+        $res = $db->query($sql); 	
+	if ($res === false) {             
+            $error = $db->error_list[0]['error'];     
+            print "!!! ERROR: $error\n";               
         }
-
-        return $res;
     }
-
-    return false;
+    return $res;
 }
 
 /**
