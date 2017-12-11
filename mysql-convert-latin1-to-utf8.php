@@ -64,12 +64,12 @@ $mapstring = substr($mapstring, 0, -1);
 echo $mapstring;
 
 // Open a connection to the information_schema database
-$infoDB = mysql_connect($dbHost, $dbUser, $dbPass);
-mysql_select_db('information_schema', $infoDB);
+$infoDB = new mysqli($dbHost, $dbUser, $dbPass);
+$infoDB->select_db('information_schema');
 
 // Open a second connection to the target (to be converted) database
-$targetDB = mysql_connect($dbHost, $dbUser, $dbPass, true);
-mysql_select_db($dbName, $targetDB);
+$targetDB = new mysqli($dbHost, $dbUser, $dbPass);
+$targetDB->select_db($dbName);
 
 //
 // TODO: FULLTEXT Indexes
@@ -230,19 +230,14 @@ sqlExec($infoDB, "ALTER DATABASE $dbName COLLATE $defaultCollation", $pretend);
 function sqlExec($db, $sql, $pretend = false)
 {
     echo "$sql;\n";
-
     if ($pretend === false) {
-        $res = mysql_query($sql, $db);
-
-        $error = mysql_error($db);
-        if ($error !== '') {
-            print "!!! ERROR: $error\n";
+        $res = $db->query($sql); 	
+	if ($res === false) {             
+            $error = $db->error_list[0]['error'];     
+            print "!!! ERROR: $error\n";               
         }
-
-        return $res;
     }
-
-    return false;
+    return $res;
 }
 
 /**
@@ -260,7 +255,7 @@ function sqlObjs($db, $sql)
     $a = array();
 
     if ($res !== false) {
-        while ($obj = mysql_fetch_object($res)) {
+        while ($obj = $res->fetch_object()) {
             $a[] = $obj;
         }
     }
