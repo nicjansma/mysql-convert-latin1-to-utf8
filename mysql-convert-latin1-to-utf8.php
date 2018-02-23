@@ -211,7 +211,7 @@ foreach ($tables as $table) {
 //
 
 // Set the default collation
-sqlExec($infoDB, "ALTER DATABASE $dbName COLLATE $defaultCollation", $pretend);
+sqlExec($infoDB, "ALTER DATABASE `$dbName` COLLATE $defaultCollation", $pretend);
 
 // Done!
 
