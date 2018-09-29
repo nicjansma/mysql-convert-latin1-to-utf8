@@ -116,6 +116,8 @@ For example:
 
 This showed me the specific rows that contained invalid UTF-8, so I hand-edited to fix them. You could manually NULL them out using an UPDATE if you're not afraid of losing data. I had to do this for 6 columns out of the 115 columns that were converted.  Only 30 rows in total were corrupt.
 
+You may also want to [use `utf8mb4` instead of `utf8`](https://medium.com/@adamhooper/in-mysql-never-use-utf8-use-utf8mb4-11761243e434) as your collation.  This means you would set `$defaultCollation='utf8mb4_unicode_ci';`.
+
 # Usage
 
 First, read over the script and make sure you understand what it does.  If you don't understand what it's doing, you
