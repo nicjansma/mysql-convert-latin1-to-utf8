@@ -51,7 +51,7 @@ And import this structure to another test MySQL database:
 
 Next, run the conversion script (below) against your temporary database:
 
-    server> php -f mysql_convert_latin1_to_utf8.php
+    server> php -f mysql-convert-latin1-to-utf8.php
 
 The script will spit out "!!! ERROR" statements if a change fails.  If you encounter ERRORs, modifications may be needed based on your requirements.  Some of the common problems are listed in Step 3.
 
