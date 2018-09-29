@@ -92,7 +92,7 @@ foreach ($tables as $table) {
     $tableName      = $table->TABLE_NAME;
     $tableCollation = $table->TABLE_COLLATION;
 
-    // Find all columns that aren't of the destination collation
+    // Find all columns whose collation is of one of $mapstring's source types
     $cols = sqlObjs($infoDB,
         "SELECT *
          FROM   COLUMNS
