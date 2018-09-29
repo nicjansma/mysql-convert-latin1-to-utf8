@@ -43,7 +43,7 @@ You should test all of the changes before committing them to your database.
 
 The first thing to test is that the SQL generated from the conversion script is correct.  To do this, you can dump the structure of your database:
 
-    server> mysqldump -d -h localhost -u dbuser -p mydatabase > structure.sql
+    server> mysqldump --no-data -h localhost -u dbuser -p mydatabase > structure.sql
 
 And import this structure to another test MySQL database:
 
